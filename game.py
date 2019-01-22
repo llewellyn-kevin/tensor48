@@ -11,10 +11,8 @@ UNKNOWN = -1
 #define the game data structure and some helper functions
 class Board:
     def __init__(self):
-        self.board = self._demo_board2()
-        self.get_rotated_board(2)
-
         self.rotation_cache = UNKNOWN
+        self.board = self.clear_board()
 
     def clear_board(self):
         return np.array([[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]])
@@ -26,11 +24,19 @@ class Board:
         return np.array([[0,1,2,3],[4,5,6,7],[8,9,10,11],[12,13,14,15]])
 
 
-    def get_rotated_board(self, magnitude):
-        return np.rot90(self.board, magnitude)
+    def rotate_board(self, magnitude):
+        self.board = np.rot90(self.board, magnitude)
+        self.rotation_cache = magnitude
+    def undo_rotation(self):
+        if self.rotation_cache == UNKNOWN:
+            raise AssertionError('''Assertion of Board.undo_rotation is that Board.rotate_board has 
+                been called since this method was last called. This failed. Board.undo_rotation was 
+                either called twice or was called before Board.rotation was ever called''')
+        self.board = np.rot90(self.board, self.rotation_cache * -1)
+        self.rotation_cache = UNKNOWN
+        
 
     def print_raw_board(self):
         print(self.board)
 
 board = Board()
-board.print_raw_board()
