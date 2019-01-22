@@ -1,6 +1,11 @@
 #include some helper libraries
 import numpy as np
 import random as rand
+import json
+
+# read the settings
+with open('settings.json') as settings_file:
+    settings = json.load(settings_file)
 
 #define some useful constants
 LEFT    = 0
@@ -15,16 +20,19 @@ HEIGHT = 4
 #define the game data structure and some helper functions
 class Board:
     def __init__(self, width, height):
-        self.width = width
-        self.height = height
+        self.width = int(settings["board_size"]["width"])
+        self.height = int(settings["board_size"]["height"])
         self.rotation_cache = UNKNOWN
         self.score = 0
         self.board = self.clear_board()
+
+        for i in range(0, int(settings["starting_tile_count"])):
+            self.gen_random_tile()
         # self.board = self._demo_board()
         # self.collapse_board()
-        while not self.board_full():
-            self.gen_random_tile()
-            self.print_game_board()
+        # while not self.board_full():
+            # self.gen_random_tile()
+            # self.print_game_board()
 
 
     def clear_board(self):
@@ -74,7 +82,7 @@ class Board:
 
     # inserts a new tile into board at a random 0 location
     def gen_random_tile(self):
-        new_tile = 1 if rand.randint(1, 100) <= 90 else 2 # 90% chance of 2, else 4
+        new_tile = 1 if rand.randint(1, 100) <= int(settings["chance_of_two"]) else 2
         zero_indices = np.where(self.board == 0)
         random_spot = rand.randint(0, zero_indices[0].size - 1)
         self.board[zero_indices[0][random_spot]][zero_indices[1][random_spot]] = new_tile
