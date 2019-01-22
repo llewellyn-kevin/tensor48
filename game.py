@@ -18,13 +18,12 @@ class Board:
         self.height = height
         self.rotation_cache = UNKNOWN
         self.score = 0
-        self.board = self._demo_board()
+        self.board = self.clear_board()
+        # self.board = self._demo_board()
         self.collapse_board()
 
     def clear_board(self):
-        return np.array([[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]])
-        # TODO: Replace this method, and maybe the demo ones to be able to dymically create 
-        # an empty board of the proper size
+        return np.array([np.zeros(self.width) for i in range(0, self.height)])
 
     # these boards will not be used in the game but will be useful for development purposes
     def _demo_board(self):
@@ -62,7 +61,7 @@ class Board:
             # if two side by side numbers are the same, increment the first, delete the second
             if reduced_row[i] == reduced_row[i + 1]:
                 reduced_row[i] += 1
-                self.score += pow(2, row[i])
+                self.score += pow(2, row[i]) # TODO: fix score calculation
                 reduced_row = np.delete(reduced_row, i + 1)
         # figure out how many elements were removed then append that many zeros onto the end
         zeros = np.zeros(self.width - reduced_row.size)
@@ -73,8 +72,8 @@ class Board:
     def print_game_board(self):
         print('')
         print('Score: {}'.format(self.score))
-        for i in range(0, self.width):
-            for j in range(0, self.height):
+        for i in range(0, self.height):
+            for j in range(0, self.width):
                 scored_val = '' if (self.board[i][j] == 0) else int(pow(2, self.board[i][j]))
                 print('[{:>4}]'.format(scored_val)),
             print('') # Line break at the end of each row
