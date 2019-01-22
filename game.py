@@ -14,12 +14,9 @@ RIGHT   = 2
 DOWN    = 3
 UNKNOWN = -1
 
-WIDTH  = 4
-HEIGHT = 4
-
 #define the game data structure and some helper functions
 class Board:
-    def __init__(self, width, height):
+    def __init__(self):
         self.width = int(settings["board_size"]["width"])
         self.height = int(settings["board_size"]["height"])
         self.rotation_cache = UNKNOWN
@@ -102,6 +99,6 @@ class Board:
             print('') # Line break at the end of each row
         print('')
 
-board = Board(WIDTH, HEIGHT)
+board = Board()
 board.print_raw_board()
 board.print_game_board()

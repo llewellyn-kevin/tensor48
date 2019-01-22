@@ -4,7 +4,7 @@
 		"height":"4"
 	},
 	"chance_of_two":"90",
-	"starting_tile_count":"16",
+	"starting_tile_count":"2",
 
 	"default_settings": {
 		"board_size": {
