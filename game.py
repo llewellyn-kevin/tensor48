@@ -62,19 +62,18 @@ class Board:
             # if two side by side numbers are the same, increment the first, delete the second
             if reduced_row[i] == reduced_row[i + 1]:
                 reduced_row[i] += 1
-                self.score += pow(2, row[i])
+                self.score += int(pow(2, row[i]))
                 reduced_row = np.delete(reduced_row, i + 1)
         # figure out how many elements were removed then append that many zeros onto the end
         zeros = np.zeros(self.width - reduced_row.size)
         return np.concatenate((reduced_row, zeros), axis=None)
-        # TODO: make this not return doubles
 
     def print_raw_board(self):
         print(self.board)
     def print_game_board(self):
         for i in range(0, self.width):
             for j in range(0, self.height):
-                scored_val = '' if (self.board[i][j] == 0) else pow(2, self.board[i][j])
+                scored_val = '' if (self.board[i][j] == 0) else int(pow(2, self.board[i][j]))
                 print('[{:>4}]'.format(scored_val)),
             print('') # Line break at the end of each row
 
