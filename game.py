@@ -18,7 +18,7 @@ class Board:
         self.height = height
         self.rotation_cache = UNKNOWN
         self.score = 0
-        self.board = self._demo_board2()
+        self.board = self._demo_board()
         self.collapse_board()
 
     def clear_board(self):
@@ -52,7 +52,7 @@ class Board:
     def collapse_board(self):
         self.board = np.array([self.collapse_row(row) for row in self.board])
     
-    # "slides" all numbers to the left and combines like terms once
+    # "slides" all numbers to the left and combines like terms once, also increments self.score
     def collapse_row(self, row):
         reduced_row = row[np.where(row > 0)] # remove all zeros
         for i in range(0, reduced_row.size - 1):
@@ -62,7 +62,7 @@ class Board:
             # if two side by side numbers are the same, increment the first, delete the second
             if reduced_row[i] == reduced_row[i + 1]:
                 reduced_row[i] += 1
-                self.score += int(pow(2, row[i]))
+                self.score += pow(2, row[i])
                 reduced_row = np.delete(reduced_row, i + 1)
         # figure out how many elements were removed then append that many zeros onto the end
         zeros = np.zeros(self.width - reduced_row.size)
@@ -71,11 +71,14 @@ class Board:
     def print_raw_board(self):
         print(self.board)
     def print_game_board(self):
+        print('')
+        print('Score: {}'.format(self.score))
         for i in range(0, self.width):
             for j in range(0, self.height):
                 scored_val = '' if (self.board[i][j] == 0) else int(pow(2, self.board[i][j]))
                 print('[{:>4}]'.format(scored_val)),
             print('') # Line break at the end of each row
+        print('')
 
 board = Board(WIDTH, HEIGHT)
 board.print_raw_board()
