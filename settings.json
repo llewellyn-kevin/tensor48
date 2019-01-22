@@ -1,0 +1,17 @@
+{
+	"board_size": {
+		"width":"4",
+		"height":"4"
+	},
+	"chance_of_two":"90",
+	"starting_tile_count":"16",
+
+	"default_settings": {
+		"board_size": {
+			"width":"4",
+			"height":"4"
+		},
+		"chance_of_two":"90",
+		"starting_tile_count":"2"
+	}
+}
