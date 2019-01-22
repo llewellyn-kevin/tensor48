@@ -1,5 +1,6 @@
 #include some helper libraries
 import numpy as np
+import random as rand
 
 #define some useful constants
 LEFT    = 0
@@ -20,7 +21,11 @@ class Board:
         self.score = 0
         self.board = self.clear_board()
         # self.board = self._demo_board()
-        self.collapse_board()
+        # self.collapse_board()
+        while not self.board_full():
+            self.gen_random_tile()
+            self.print_game_board()
+
 
     def clear_board(self):
         return np.array([np.zeros(self.width) for i in range(0, self.height)])
@@ -66,6 +71,16 @@ class Board:
         # figure out how many elements were removed then append that many zeros onto the end
         zeros = np.zeros(self.width - reduced_row.size)
         return np.concatenate((reduced_row, zeros), axis=None)
+
+    # inserts a new tile into board at a random 0 location
+    def gen_random_tile(self):
+        new_tile = 1 if rand.randint(1, 100) <= 90 else 2 # 90% chance of 2, else 4
+        zero_indices = np.where(self.board == 0)
+        random_spot = rand.randint(0, zero_indices[0].size - 1)
+        self.board[zero_indices[0][random_spot]][zero_indices[1][random_spot]] = new_tile
+
+    def board_full(self):
+        return np.where(self.board == 0)[0].size == 0
 
     def print_raw_board(self):
         print(self.board)
