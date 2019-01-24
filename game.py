@@ -45,6 +45,7 @@ class Board:
         self.undo_rotation()
         if not np.array_equal(board_copy, self.board):
             self.gen_random_tile()
+        #TODO: Add a function to check for a game over
 
     # to input player actions, we will rotate the board, so we only have to slide the numbers to 
     # the left. So if the tiles are pushed up, we will orient the board to have the top side as 
@@ -105,4 +106,3 @@ class Board:
             print('') # Line break at the end of each row
         print('')
 
-board = Board()
