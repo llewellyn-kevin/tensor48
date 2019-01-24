@@ -7,14 +7,14 @@ import json
 with open('settings.json') as settings_file:
     settings = json.load(settings_file)
 
-#define some useful constants
+# define some useful constants
 LEFT    = 0
 UP      = 1
 RIGHT   = 2
 DOWN    = 3
 UNKNOWN = -1
 
-#define the game data structure and some helper functions
+# define the game data structure and some helper functions
 class Board:
     def __init__(self):
         self.width = int(settings["board_size"]["width"])
@@ -25,13 +25,8 @@ class Board:
 
         for i in range(0, int(settings["starting_tile_count"])):
             self.gen_random_tile()
-        # self.board = self._demo_board()
-        # self.collapse_board()
-        # while not self.board_full():
-            # self.gen_random_tile()
-            # self.print_game_board()
-
-
+    
+    # returns a clear board of width and height specified by the settings.json
     def clear_board(self):
         return np.array([np.zeros(self.width) for i in range(0, self.height)])
 
@@ -40,6 +35,16 @@ class Board:
         return np.array([[0,0,1,1],[1,1,1,1],[2,2,2,2],[3,3,3,3]])
     def _demo_board2(self):
         return np.array([[0,1,1,3],[4,5,6,7],[8,9,10,11],[12,13,14,15]])
+
+    # void function that takes input into the board, determines if a change has been made, and
+    # generates a new piece if it has
+    def input_direction(self, direction):
+        board_copy = np.copy(self.board) # create a deep copy of the array
+        self.rotate_board(direction)
+        self.collapse_board()
+        self.undo_rotation()
+        if not np.array_equal(board_copy, self.board):
+            self.gen_random_tile()
 
     # to input player actions, we will rotate the board, so we only have to slide the numbers to 
     # the left. So if the tiles are pushed up, we will orient the board to have the top side as 
@@ -84,6 +89,7 @@ class Board:
         random_spot = rand.randint(0, zero_indices[0].size - 1)
         self.board[zero_indices[0][random_spot]][zero_indices[1][random_spot]] = new_tile
 
+    # returns whether or not the board is full
     def board_full(self):
         return np.where(self.board == 0)[0].size == 0
 
@@ -99,7 +105,4 @@ class Board:
             print('') # Line break at the end of each row
         print('')
 
-
-# board = Board()
-# board.print_raw_board()
-# board.print_game_board()
+board = Board()
