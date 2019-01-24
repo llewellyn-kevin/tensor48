@@ -99,6 +99,7 @@ class Board:
             print('') # Line break at the end of each row
         print('')
 
-board = Board()
-board.print_raw_board()
-board.print_game_board()
+
+# board = Board()
+# board.print_raw_board()
+# board.print_game_board()
