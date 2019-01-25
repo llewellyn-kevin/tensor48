@@ -1,8 +1,6 @@
 import game
 import curses
 
-continue_game = True
-
 def main(stdscr):
 
     stdscr.keypad(True)
@@ -12,7 +10,7 @@ def main(stdscr):
     write_template(stdscr)
     stdscr.refresh()
     
-    while continue_game:
+    while True:
         char = stdscr.getch()
         if char == ord('q'):
             break
