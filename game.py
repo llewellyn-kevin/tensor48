@@ -17,19 +17,39 @@ UNKNOWN = -1
 # define the game data structure and some helper functions
 class Board:
     def __init__(self):
-        self.width = int(settings["board_size"]["width"])
-        self.height = int(settings["board_size"]["height"])
+        width = int(settings["board_size"]["width"])
+        height = int(settings["board_size"]["height"])
+        assert width > 0, "Invalid width" 
+        assert height > 0, "Invalid height" 
+        self.init_board(width, height)
         self.rotation_cache = UNKNOWN
         self.score = 0
-        self.board = self.clear_board()
-
+        
         for i in range(int(settings["starting_tile_count"])):
             self.gen_random_tile()
+        
+
+    # initializes a clear board withspecified width and height
+    #
+    # @pre width and height are positive integers set in settings.json
+    # @post |board| = width * height
+    #       board[i][j] = 0
+    def init_board(self, width, height):
+        self.board = np.zeros((width, height), dtype=np.uint8)
     
-    # returns a clear board of width and height specified by the settings.json
+    # @pre board was initialized    
+    def width(self):
+        (width, height) = self.board.shape
+        return width
+
+    # @pre board was initialized    
+    def height(self):
+        (width, height) = self.board.shape
+        return height
+    
+    # sets board values to 0 
     def clear_board(self):
-        return np.zeros((self.width, self.height), dtype=np.uint8)
-        # return np.array([np.zeros(self.width) for i in range(0, self.height)])
+        self.board.set(0)
 
     # these boards will not be used in the game but will be useful for development purposes
     def _demo_board(self):
@@ -88,7 +108,7 @@ class Board:
                 self.score += pow(2, row[i]) # TODO: fix score calculation
                 reduced_row = np.delete(reduced_row, i + 1)
         # figure out how many elements were removed then append that many zeros onto the end
-        zeros = np.zeros(self.width - reduced_row.size)
+        zeros = np.zeros(self.width() - reduced_row.size)
         return np.concatenate((reduced_row, zeros), axis=None)
 
     # inserts a new tile into board at a random 0 location
@@ -107,7 +127,7 @@ class Board:
     def has_similar_neighbor(self, x, y):
         pos = [(x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1)];
         for (x_pos, y_pos) in pos:
-            if  (x_pos < 0) | (x_pos >= self.width) | (y_pos < 0) | (y_pos >= self.height):
+            if  (x_pos < 0) | (x_pos >= self.width()) | (y_pos < 0) | (y_pos >= self.height()):
                 continue
             if self.board[x_pos, y_pos] == self.board[x,y]:
                 return True
@@ -121,7 +141,6 @@ class Board:
     #   game is over if no tiles have similar neighbors
     # 	return True
     #
-    # @pre board.shape = (self.width, self.height)
     # @post board'[i] = board[i] 
     def is_game_over(self):
         if self.board_full():
@@ -145,8 +164,8 @@ class Board:
     def print_game_board(self):
         print('')
         print('Score: {}'.format(self.score))
-        for i in range(0, self.height):
-            for j in range(0, self.width):
+        for i in range(0, self.height()):
+            for j in range(0, self.width()):
                 val = self.board[i][j]
                 scored_val = '' if (val == 0) else 2**val
                 print('[{:>4}]'.format(scored_val)),
