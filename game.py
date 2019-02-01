@@ -115,9 +115,10 @@ class Board:
         if self.board_full():
             for x in range(self.width):
                 for y in range(self.height):
-                    if has_similar_neighboor(x, y):
+                    if self.has_similar_neighboor(x, y):
                         return False
-        return True
+            return True
+        return False
 
     # returns whether or not the board is full
     def board_full(self):
