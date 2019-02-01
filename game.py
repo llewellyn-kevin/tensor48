@@ -105,16 +105,12 @@ class Board:
     # [ ][+][ ]
     #
     def has_similar_neighbor(self, x, y):
-        for i in range(2):
-            x_pos = x - 1 + i
-            if (x_pos < 0) | (x_pos >= self.width):
+        pos = [(x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1)];
+        for (x_pos, y_pos) in pos:
+            if  (x_pos < 0) | (x_pos >= self.width) | (y_pos < 0) | (y_pos >= self.height):
                 continue
-            for j in range(2):
-                y_pos = y - 1 + j
-                if (y_pos < 0) | (y_pos >= self.height) | ((x_pos == x) & (y_pos == y)):
-                    continue
-                if self.board[x_pos, y_pos] == self.board[x,y]:
-                    return True
+            if self.board[x_pos, y_pos] == self.board[x,y]:
+                return True
         return False
 
     # tests to see if the game is over
@@ -123,15 +119,15 @@ class Board:
     #   then goes through the board to see if any neighbor tiles have same value
     #       if so return False
     #   game is over if no tiles have similar neighbors
-    # 
+    # 	return True
+    #
     # @pre board.shape = (self.width, self.height)
     # @post board'[i] = board[i] 
     def is_game_over(self):
         if self.board_full():
-            for x in range(self.width):
-                for y in range(self.height):
-                    if self.has_similar_neighbor(x, y):
-                        return False
+            for (x, y), value in np.ndenumerate(self.board):
+                if self.has_similar_neighbor(x, y):
+                    return False
             return True
         return False
 
