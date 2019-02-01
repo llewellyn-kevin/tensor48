@@ -52,7 +52,7 @@ class Board:
         if not np.array_equal(board_copy, self.board):
             self.gen_random_tile()
         #TODO: Add a function to check for a game over
-        if self.game_over():
+        if self.is_game_over():
             pass
 
     # to input player actions, we will rotate the board, so we only have to slide the numbers to 
@@ -98,7 +98,13 @@ class Board:
         random_spot = rand.randint(0, zero_indices[0].size - 1)
         self.board[zero_indices[0][random_spot]][zero_indices[1][random_spot]] = new_tile
 
-    def has_similar_neighboor(self, x, y):
+    # tests to see if a tile at board[x][y]
+    # has neighbors with similar values at
+    # [ ][+][ ]
+    # [+][ ][+]
+    # [ ][+][ ]
+    #
+    def has_similar_neighbor(self, x, y):
         for i in range(2):
             x_pos = x - 1 + i
             if (x_pos < 0) | (x_pos >= self.width):
@@ -111,26 +117,42 @@ class Board:
                     return True
         return False
 
-    def game_over(self):
+    # tests to see if the game is over
+    # first test is to see if the board is full
+    # -if not, reutrn False, game is not over o.O
+    #   then goes through the board to see if any neighbor tiles have same value
+    #       if so return False
+    #   game is over if no tiles have similar neighbors
+    # 
+    # @pre board.shape = (self.width, self.height)
+    # @post board'[i] = board[i] 
+    def is_game_over(self):
         if self.board_full():
             for x in range(self.width):
                 for y in range(self.height):
-                    if has_similar_neighboor(x, y):
+                    if self.has_similar_neighbor(x, y):
                         return False
-        return True
+            return True
+        return False
 
     # returns whether or not the board is full
+    # returns True if there are no zeroes on the board, False otherwise
     def board_full(self):
         return np.where(self.board == 0)[0].size == 0
 
+    # prints self.board
     def print_raw_board(self):
         print(self.board)
+
+    # prints formatted board, as one might think of a 2048 game
+    # translate the numbers to their power of two
     def print_game_board(self):
         print('')
         print('Score: {}'.format(self.score))
         for i in range(0, self.height):
             for j in range(0, self.width):
-                scored_val = '' if (self.board[i][j] == 0) else int(pow(2, self.board[i][j]))
+                val = self.board[i][j]
+                scored_val = '' if (val == 0) else 2**val
                 print('[{:>4}]'.format(scored_val)),
             print('') # Line break at the end of each row
         print('')
