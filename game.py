@@ -23,18 +23,24 @@ class Board:
         self.score = 0
         self.board = self.clear_board()
 
-        for i in range(0, int(settings["starting_tile_count"])):
+        for i in range(int(settings["starting_tile_count"])):
             self.gen_random_tile()
     
     # returns a clear board of width and height specified by the settings.json
     def clear_board(self):
-        return np.array([np.zeros(self.width) for i in range(0, self.height)])
+        return np.zeros((self.width, self.height), dtype=np.uint8)
+        # return np.array([np.zeros(self.width) for i in range(0, self.height)])
 
     # these boards will not be used in the game but will be useful for development purposes
     def _demo_board(self):
         return np.array([[0,0,1,1],[1,1,1,1],[2,2,2,2],[3,3,3,3]])
     def _demo_board2(self):
         return np.array([[0,1,1,3],[4,5,6,7],[8,9,10,11],[12,13,14,15]])
+
+    def _demo_not_over_board(self):
+        return np.array([[1,1,1,3],[4,5,6,7],[8,9,10,11],[12,13,14,15]])
+    def _demo_over_board(self):
+        return np.array([[1,2,3,4],[5,6,7,8],[9,10,11,12],[13,14,15,16]])
 
     # void function that takes input into the board, determines if a change has been made, and
     # generates a new piece if it has
@@ -46,6 +52,8 @@ class Board:
         if not np.array_equal(board_copy, self.board):
             self.gen_random_tile()
         #TODO: Add a function to check for a game over
+        if self.game_over():
+            pass
 
     # to input player actions, we will rotate the board, so we only have to slide the numbers to 
     # the left. So if the tiles are pushed up, we will orient the board to have the top side as 
@@ -89,6 +97,27 @@ class Board:
         zero_indices = np.where(self.board == 0)
         random_spot = rand.randint(0, zero_indices[0].size - 1)
         self.board[zero_indices[0][random_spot]][zero_indices[1][random_spot]] = new_tile
+
+    def has_similar_neighboor(self, x, y):
+        for i in range(2):
+            x_pos = x - 1 + i
+            if (x_pos < 0) | (x_pos >= self.width):
+                continue
+            for j in range(2):
+                y_pos = y - 1 + j
+                if (y_pos < 0) | (y_pos >= self.height) | ((x_pos == x) & (y_pos == y)):
+                    continue
+                if self.board[x_pos, y_pos] == self.board[x,y]:
+                    return True
+        return False
+
+    def game_over(self):
+        if self.board_full():
+            for x in range(self.width):
+                for y in range(self.height):
+                    if has_similar_neighboor(x, y):
+                        return False
+        return True
 
     # returns whether or not the board is full
     def board_full(self):
