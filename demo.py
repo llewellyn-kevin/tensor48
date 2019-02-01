@@ -1,7 +1,5 @@
 import curses
-import interface
-
-interface = interface.Interface()
+from interface import Interface
 
 def main(stdscr):
 
@@ -15,8 +13,12 @@ def main(stdscr):
     
     while True:
         char = stdscr.getch()
+        # check for control inputs
         if char == ord('q'):
-            break
+            return False
+        if char == ord('r'):
+            return True
+        # check for game inputs
         elif char == curses.KEY_LEFT: 
             interface.move_left()
         elif char == curses.KEY_UP:
@@ -25,6 +27,7 @@ def main(stdscr):
             interface.move_right()
         elif char == curses.KEY_DOWN:
             interface.move_down()
+        # if there was input, update the game board
         if not char == -1:
             stdscr.clear()
             write_template(stdscr)
@@ -40,6 +43,8 @@ def write_template(stdscr):
     write_board(stdscr)
     stdscr.move(24, 2)
     stdscr.addstr('Press "q" to quit')
+    stdscr.move(25, 2)
+    stdscr.addstr('Press "r" to restart')
     stdscr.move(0, 0)
 
 # Writes the board to the screen
@@ -69,4 +74,9 @@ def write_nums(stdscr, board):
                 stdscr.addstr('{}'.format(int(2 ** col)))
     stdscr.move(0, 0)
 
-curses.wrapper(main)
+restart = True
+while restart:
+    interface = Interface()
+    restart = curses.wrapper(main)
+
+
