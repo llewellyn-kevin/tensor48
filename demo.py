@@ -1,5 +1,7 @@
-import game
 import curses
+import interface
+
+interface = interface.Interface()
 
 def main(stdscr):
 
@@ -14,6 +16,14 @@ def main(stdscr):
         char = stdscr.getch()
         if char == ord('q'):
             break
+        elif char == curses.KEY_LEFT: 
+            interface.move_left()
+        elif char == curses.KEY_UP:
+            interface.move_up()
+        elif char == curses.KEY_RIGHT:
+            interface.move_right()
+        elif char == curses.KEY_DOWN:
+            interface.move_down()
         if not char == -1:
             stdscr.clear()
             write_template(stdscr)
