@@ -23,8 +23,10 @@ class Board:
         assert height > 0, "Invalid height" 
         self.init_board(width, height)
         self.rotation_cache = UNKNOWN
-        self.score = 0
-        
+            
+        # set game to initial conditions
+        self.reset()
+
         for i in range(int(settings["starting_tile_count"])):
             self.gen_random_tile()
         
@@ -36,44 +38,64 @@ class Board:
     #       board[i][j] = 0
     def init_board(self, width, height):
         self.board = np.zeros((width, height), dtype=np.uint8)
+
     
     # @pre board was initialized    
     def width(self):
         (width, height) = self.board.shape
         return width
 
+
     # @pre board was initialized    
     def height(self):
         (width, height) = self.board.shape
         return height
+
     
-    # sets board values to 0 
-    def clear_board(self):
-        self.board.set(0)
+    # sets board values to 0 (or something else)
+    def reset_board(self):
+        self.board.fill(0)
+        # self.board = self._demo_board()
+        # self.board = self._demo_board2()
+        # self.board = self._demo_not_over_board()
+        # self.board = self._demo_over_board()
+    
+
+    # resets game back to initial conditions
+    def reset(self):
+        self.reset_board()
+        self.score = 0
+        self.is_game_over = False
+
 
     # these boards will not be used in the game but will be useful for development purposes
     def _demo_board(self):
         return np.array([[0,0,1,1],[1,1,1,1],[2,2,2,2],[3,3,3,3]])
+
     def _demo_board2(self):
         return np.array([[0,1,1,3],[4,5,6,7],[8,9,10,11],[12,13,14,15]])
 
     def _demo_not_over_board(self):
         return np.array([[1,1,1,3],[4,5,6,7],[8,9,10,11],[12,13,14,15]])
+
     def _demo_over_board(self):
         return np.array([[1,2,3,4],[5,6,7,8],[9,10,11,12],[13,14,15,16]])
+
 
     # void function that takes input into the board, determines if a change has been made, and
     # generates a new piece if it has
     def input_direction(self, direction):
+        if self.is_game_over:
+            print ("you can not do that, game is over")
+            return
         board_copy = np.copy(self.board) # create a deep copy of the array
         self.rotate_board(direction)
         self.collapse_board()
         self.undo_rotation()
         if not np.array_equal(board_copy, self.board):
             self.gen_random_tile()
-        #TODO: Add a function to check for a game over
-        if self.is_game_over():
-            pass
+        self.set_is_game_over()
+
 
     # to input player actions, we will rotate the board, so we only have to slide the numbers to 
     # the left. So if the tiles are pushed up, we will orient the board to have the top side as 
@@ -81,6 +103,7 @@ class Board:
     def rotate_board(self, magnitude):
         self.board = np.rot90(self.board, magnitude)
         self.rotation_cache = magnitude
+
     def undo_rotation(self):
         if self.rotation_cache == UNKNOWN:
             raise AssertionError('''Assertion of Board.undo_rotation is that Board.rotate_board has 
@@ -91,9 +114,11 @@ class Board:
         self.board = np.rot90(self.board, self.rotation_cache * -1)
         self.rotation_cache = UNKNOWN
 
+
     # performs collapse_row on every row of the board
     def collapse_board(self):
         self.board = np.array([self.collapse_row(row) for row in self.board])
+
     
     # "slides" all numbers to the left and combines like terms once, also increments self.score
     def collapse_row(self, row):
@@ -111,12 +136,14 @@ class Board:
         zeros = np.zeros(self.width() - reduced_row.size)
         return np.concatenate((reduced_row, zeros), axis=None)
 
+
     # inserts a new tile into board at a random 0 location
     def gen_random_tile(self):
         new_tile = 1 if rand.randint(1, 100) <= int(settings["chance_of_two"]) else 2
         zero_indices = np.where(self.board == 0)
         random_spot = rand.randint(0, zero_indices[0].size - 1)
         self.board[zero_indices[0][random_spot]][zero_indices[1][random_spot]] = new_tile
+
 
     # tests to see if a tile at board[x][y]
     # has neighbors with similar values at
@@ -133,6 +160,7 @@ class Board:
                 return True
         return False
 
+
     # tests to see if the game is over
     # first test is to see if the board is full
     # -if not, reutrn False, game is not over o.O
@@ -142,22 +170,26 @@ class Board:
     # 	return True
     #
     # @post board'[i] = board[i] 
-    def is_game_over(self):
+    def set_is_game_over(self):
+        if self.is_game_over:
+            return
         if self.board_full():
             for (x, y), value in np.ndenumerate(self.board):
                 if self.has_similar_neighbor(x, y):
-                    return False
-            return True
-        return False
+                    return
+            self.is_game_over = True
+
 
     # returns whether or not the board is full
     # returns True if there are no zeroes on the board, False otherwise
     def board_full(self):
         return np.where(self.board == 0)[0].size == 0
 
+
     # prints self.board
     def print_raw_board(self):
         print(self.board)
+
 
     # prints formatted board, as one might think of a 2048 game
     # translate the numbers to their power of two
