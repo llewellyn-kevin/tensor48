@@ -168,8 +168,6 @@ class Board:
     #       if so return False
     #   game is over if no tiles have similar neighbors
     # 	return True
-    #
-    # @post board'[i] = board[i] 
     def set_is_game_over(self):
         if self.is_game_over:
             return
