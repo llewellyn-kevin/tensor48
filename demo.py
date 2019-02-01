@@ -10,6 +10,7 @@ def main(stdscr):
 
     stdscr.clear()
     write_template(stdscr)
+    write_nums(stdscr, interface.get_board())
     stdscr.refresh()
     
     while True:
@@ -27,6 +28,7 @@ def main(stdscr):
         if not char == -1:
             stdscr.clear()
             write_template(stdscr)
+            write_nums(stdscr, interface.get_board())
             stdscr.refresh()
 
 def write_template(stdscr):
@@ -37,7 +39,7 @@ def write_template(stdscr):
     stdscr.addstr('Current Score: 000000')
     write_board(stdscr)
     stdscr.move(24, 2)
-    stdscr.addstr('Press "q" to quit at any time')
+    stdscr.addstr('Press "q" to quit')
     stdscr.move(0, 0)
 
 # Writes the board to the screen
@@ -59,6 +61,12 @@ def write_line(stdscr):
     stdscr.addstr('|      |      |      |      |')
 def write_border(stdscr):
     stdscr.addstr('+------+------+------+------+')
-
+def write_nums(stdscr, board):
+    for rindex, row in enumerate(board):
+        for cindex, col in enumerate(row):
+            if not col == 0:
+                stdscr.move(4 * rindex + 8, 7 * cindex + 4)
+                stdscr.addstr('{}'.format(int(2 ** col)))
+    stdscr.move(0, 0)
 
 curses.wrapper(main)
