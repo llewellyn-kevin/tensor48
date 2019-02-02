@@ -1,17 +1,5 @@
-import game
+import randomPlayer
 
-board = game.Board()
-print ("is over")
-print (board.is_game_over())
+player = randomPlayer.RandomPlayer()
 
-board.board = board._demo_not_over_board()
-
-print ("new board")
-board.print_raw_board()
-
-print ("is over")
-print (board.is_game_over())
-print ("is over")
-board.board = board._demo_over_board()
-board.print_raw_board()
-print (board.is_game_over())
+player.run()
