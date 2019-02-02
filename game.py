@@ -26,7 +26,6 @@ class Board:
             
         # set game to initial conditions
         self.reset()
-
                 
 
     # initializes a clear board withspecified width and height
@@ -130,7 +129,7 @@ class Board:
             # if two side by side numbers are the same, increment the first, delete the second
             if reduced_row[i] == reduced_row[i + 1]:
                 reduced_row[i] += 1
-                self.score += pow(2, row[i]) # TODO: fix score calculation
+                self.score += 2**reduced_row[i] 
                 reduced_row = np.delete(reduced_row, i + 1)
         # figure out how many elements were removed then append that many zeros onto the end
         zeros = np.zeros(self.width() - reduced_row.size)

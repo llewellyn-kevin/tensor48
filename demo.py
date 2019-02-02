@@ -47,7 +47,7 @@ def write_template(stdscr):
     stdscr.addstr('2048 in Python')
     stdscr.move(4, 6)
     # TODO: Make this display the actual score
-    stdscr.addstr('Current Score: 000000')
+    stdscr.addstr('Current Score: {:>6}'.format(int(interface.get_score())))
     if interface.is_game_over():
         stdscr.move(5, 6)
         stdscr.addstr('GAME OVER!')
