@@ -27,7 +27,7 @@ class Board:
         # set game to initial conditions
         self.reset()
 
-       
+                
 
     # initializes a clear board withspecified width and height
     #
@@ -53,6 +53,8 @@ class Board:
     # sets board values to 0 (or something else)
     def reset_board(self):
         self.board.fill(0)
+        for i in range(int(settings["starting_tile_count"])):
+            self.gen_random_tile()
         # self.board = self._demo_board()
         # self.board = self._demo_board2()
         # self.board = self._demo_not_over_board()
@@ -64,8 +66,6 @@ class Board:
         self.reset_board()
         self.score = 0
         self.is_game_over = False
-        for i in range(int(settings["starting_tile_count"])):
-            self.gen_random_tile()
  
 
     # these boards will not be used in the game but will be useful for development purposes
