@@ -20,6 +20,7 @@ class Interface:
     def move_right(self):
         self.board.input_direction(game.RIGHT)
 
+
     def restart(self):
         self.board.reset()
 
@@ -31,3 +32,6 @@ class Interface:
     def get_score(self):
         return self.board.score
 
+    
+    def is_game_over(self):
+        return self.board.is_game_over

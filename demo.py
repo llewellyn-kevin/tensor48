@@ -48,6 +48,9 @@ def write_template(stdscr):
     stdscr.move(4, 6)
     # TODO: Make this display the actual score
     stdscr.addstr('Current Score: 000000')
+    if interface.is_game_over():
+        stdscr.move(5, 6)
+        stdscr.addstr('GAME OVER!')
     write_board(stdscr)
     stdscr.move(24, 2)
     stdscr.addstr('Press "q" to quit')
