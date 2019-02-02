@@ -23,7 +23,7 @@ def main(stdscr):
         if char == ord('q'):
             return False
         elif char == ord('r'):
-            return True
+            interface.restart()
         # check for game inputs
         elif char == curses.KEY_LEFT: 
             interface.move_left()
@@ -90,9 +90,5 @@ def write_nums(stdscr, board):
     stdscr.move(0, 0)
 
 # Demo driver
-restart = True
-while restart:
-    interface = Interface()
-    restart = curses.wrapper(main)
-
-
+interface = Interface()
+restart = curses.wrapper(main)

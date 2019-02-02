@@ -20,6 +20,9 @@ class Interface:
     def move_right(self):
         self.board.input_direction(game.RIGHT)
 
+    def restart(self):
+        self.board.reset()
+
     # define all of my getters
     def get_board(self):
         return self.board.board
