@@ -39,7 +39,7 @@ class GAPlayer:
 
     def run(self):
         begin = time.clock()
-        run_times = 100000
+        run_times = 1000
         total_score = 0
         total_moves = 0
         for i in range(run_times):
