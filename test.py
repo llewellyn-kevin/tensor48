@@ -1,5 +1,6 @@
-import randomPlayer
+import gaPlayer
 
-player = randomPlayer.RandomPlayer()
+player = gaPlayer.GAPlayer()
 
 player.run()
+
