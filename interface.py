@@ -4,16 +4,12 @@ import numpy as np
 class Interface:
     def __init__(self):
         self.board = game.Board()
-        self.check_for_change = False
         self.has_changed = False        
 
     # define all user inputs
     def move(self, direction):
-        if self.check_for_change:
-            copy = np.copy(self.board.board)
         self.board.input_direction(direction)
-        if self.check_for_change:
-            self.has_changed = not ((copy == self.board.board).all())
+        self.has_changed = self.board.has_changed
 
     def move_up(self):
         self.move(game.UP)
@@ -33,6 +29,7 @@ class Interface:
 
     def restart(self):
         self.board.reset()
+        self.has_changed = False
 
     # define all of my getters
     def get_board(self):
@@ -45,3 +42,7 @@ class Interface:
     
     def is_game_over(self):
         return self.board.is_game_over
+
+    def _print(self):
+        self.board.print_raw_board()
+

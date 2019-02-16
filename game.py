@@ -23,7 +23,7 @@ class Board:
         assert height > 0, "Invalid height" 
         self.init_board(width, height)
         self.rotation_cache = UNKNOWN
-            
+        self.has_changed = False    
         # set game to initial conditions
         self.reset()
                 
@@ -93,8 +93,11 @@ class Board:
         self.undo_rotation()
         if not np.array_equal(board_copy, self.board):
             self.gen_random_tile()
-        self.set_is_game_over()
-
+            self.has_changed = True
+        else:
+            self.has_changed = False
+            self.set_is_game_over()
+    
 
     # to input player actions, we will rotate the board, so we only have to slide the numbers to 
     # the left. So if the tiles are pushed up, we will orient the board to have the top side as 
