@@ -33,6 +33,7 @@ class Interface:
 
     def restart(self):
         self.board.reset()
+        self.has_changed = False
 
     # define all of my getters
     def get_board(self):
@@ -45,3 +46,7 @@ class Interface:
     
     def is_game_over(self):
         return self.board.is_game_over
+
+    def _print(self):
+        self.board.print_raw_board()
+
