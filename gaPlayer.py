@@ -13,28 +13,26 @@ class GAPlayer:
                         self.interface.move_left,
                         self.interface.move_up,
                         self.interface.move_down]
-        self.ga = GA.GA()
-        self.nn = GA.NeuralNet()
-        self.nn.init_rand(4 * 4, 5, 4)
+        self.ga = GA.GA(4 * 4, 5, 4)
         # print(nn.wi)
         # print(nn.wo)
         # self.interface._print()
 
 
-    def makeChoice(self):
+    def makeChoice(self, pos):
         # self.interface.board.print_raw_board()
         inputs = self.interface.board.board.copy()
         inputs = (inputs - 1) / float(-4)
         inputs = (2 / (1 + np.exp(inputs)) - 1) 
-        array = self.nn.feedForward(np.ndarray.flatten(inputs))
+        array = self.ga.get_nn(pos).feedForward(np.ndarray.flatten(inputs))
         choice = np.where(array == np.max(array))[0][0]
         self.choices[choice]()
         # random.choice(self.choices)()
 
 
-    def play(self):
+    def play(self, pos):
         if (not self.interface.is_game_over()) & self.interface.has_changed:
-            self.makeChoice()
+            self.makeChoice(pos)
             return True
         else:
             return False
@@ -42,26 +40,20 @@ class GAPlayer:
 
     def run(self):
         begin = time.clock()
-        run_times = 1000
-        total_score = 0
-        total_moves = 0
+        run_times = 100 
+        
         for i in range(run_times):
-            self.makeChoice()
-            while(self.play()):
-                total_moves += 1
-            score = self.interface.get_score()
-            total_score += score 
-            self.interface.restart()
+            length = self.ga.length
+            for pos in range(length):
+                self.makeChoice(pos)
+                while(self.play(pos)):
+                    pass
+                self.ga.set_score(pos, self.interface.get_score())
+                self.interface.restart()
+            self.ga.next_gen()
         print("time")
         print(time.clock() - begin)
         print("")
-        print("average # moves")
-        print(total_moves / run_times)
-        print("")
-        print("average score")
-        print(total_score / run_times)
-        print("score")
-        print(total_score)
 
     def _print(self):
         self.interface._print()
