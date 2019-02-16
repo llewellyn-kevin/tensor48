@@ -23,7 +23,10 @@ class GAPlayer:
 
     def makeChoice(self):
         # self.interface.board.print_raw_board()
-        array = self.nn.feedForward(np.ndarray.flatten(self.interface.board.board))
+        inputs = self.interface.board.board.copy()
+        inputs = (inputs - 1) / float(-4)
+        inputs = (2 / (1 + np.exp(inputs)) - 1) 
+        array = self.nn.feedForward(np.ndarray.flatten(inputs))
         choice = np.where(array == np.max(array))[0][0]
         self.choices[choice]()
         # random.choice(self.choices)()
@@ -43,6 +46,7 @@ class GAPlayer:
         total_score = 0
         total_moves = 0
         for i in range(run_times):
+            self.makeChoice()
             while(self.play()):
                 total_moves += 1
             score = self.interface.get_score()
@@ -58,4 +62,7 @@ class GAPlayer:
         print(total_score / run_times)
         print("score")
         print(total_score)
+
+    def _print(self):
+        self.interface._print()
 
