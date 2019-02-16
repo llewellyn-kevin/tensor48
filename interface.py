@@ -4,16 +4,12 @@ import numpy as np
 class Interface:
     def __init__(self):
         self.board = game.Board()
-        self.check_for_change = False
         self.has_changed = False        
 
     # define all user inputs
     def move(self, direction):
-        if self.check_for_change:
-            copy = np.copy(self.board.board)
         self.board.input_direction(direction)
-        if self.check_for_change:
-            self.has_changed = not ((copy == self.board.board).all())
+        self.has_changed = self.board.has_changed
 
     def move_up(self):
         self.move(game.UP)
