@@ -19,7 +19,7 @@ class RandomPlayer:
                         self.interface.move_down]
 
         self.player_type = 0
-        self.changeType(HEURISTIC)
+        self.changeType(RANDOM)
 
 
     def changeType(self, player_type):
