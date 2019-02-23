@@ -41,15 +41,19 @@ class GAPlayer:
     def run(self):
         begin = time.clock()
         run_times = 100 
-        
+       
+        restart = self.interface.restart
+        get_score = self.interface.get_score
         for i in range(run_times):
             length = self.ga.length
             for pos in range(length):
-                self.makeChoice(pos)
-                while(self.play(pos)):
-                    pass
-                self.ga.set_score(pos, self.interface.get_score())
-                self.interface.restart()
+                self.ga.set_score(pos, 0)
+                for j in range(5):
+                    self.makeChoice(pos)
+                    while(self.play(pos)):
+                        pass
+                    self.ga.add_score(pos, get_score())
+                    restart()
             self.ga.next_gen()
         print("time")
         print(time.clock() - begin)
