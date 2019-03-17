@@ -64,7 +64,7 @@ class T48Env(py_environment.PyEnvironment):
         self._state = self._game.get_flat_board()
         self._episode_ended = self._game.is_game_over()
         delta_score = self._game.get_score() - iscore
-        
+
         # Set rewards
         if self._episode_ended:
             # return with a reward of 0
@@ -73,4 +73,4 @@ class T48Env(py_environment.PyEnvironment):
             return ts.transition(self._state, reward=delta_score, discount=1.0)
 
 # environment = T48Env()
-# utils.validate_py_environment(environment, episodes=5)
+# utils.validate_py_environment(environment, episodes=1)
