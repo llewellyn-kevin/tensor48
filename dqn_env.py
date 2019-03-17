@@ -11,15 +11,15 @@ from tf_agents.specs import array_spec
 class T48Env(py_environment.PyEnvironment):
 
     def __init__(self):
+        self._game = Interface()
+        self._state = self._game.get_flat_board()
+        self._episode_ended = False
+
         self._action_spec = array_spec.BoundedArraySpec(
                 shape=(), dtype=np.int32, minimum=0, maximum=3, name='action')
         self._observation_spec = array_spec.BoundedArraySpec(
-                shape=(4,4), dtype=np.uint8, minimum=0, name='observation')
-        self._state = 0
-        self._episode_ended = False
-
-        self._game = Interface()
-
+                shape=self._state.shape, dtype=np.uint8, minimum=0, name='observation')
+        
         # Define Actions
         self._UP = 0
         self._DOWN = 1
@@ -34,8 +34,9 @@ class T48Env(py_environment.PyEnvironment):
 
     def _reset(self):
         self._game.restart()
-        self._state = self._game.get_board()
+        self._state = self._game.get_flat_board()
         self._episode_ended = False
+
         return ts.restart(self._state)
 
     def _step(self, action):
@@ -60,7 +61,7 @@ class T48Env(py_environment.PyEnvironment):
             raise ValueError('`action` should be between 0 and 3 (inclusive).')
 
         # Get state after the agent action is taken
-        self._state = self._game.get_board()
+        self._state = self._game.get_flat_board()
         self._episode_ended = self._game.is_game_over()
         delta_score = self._game.get_score() - iscore
         
