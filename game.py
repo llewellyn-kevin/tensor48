@@ -135,7 +135,7 @@ class Board:
                 self.score += 2**reduced_row[i] 
                 reduced_row = np.delete(reduced_row, i + 1)
         # figure out how many elements were removed then append that many zeros onto the end
-        zeros = np.zeros(self.width() - reduced_row.size)
+        zeros = np.zeros((self.width() - reduced_row.size), dtype=np.uint8)
         return np.concatenate((reduced_row, zeros), axis=None)
 
 
