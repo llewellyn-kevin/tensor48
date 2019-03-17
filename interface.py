@@ -35,6 +35,9 @@ class Interface:
     def get_board(self):
         return self.board.board
 
+    def get_flat_board(self):
+        return self.board.board.flatten()
+
 
     def get_score(self):
         return self.board.score
