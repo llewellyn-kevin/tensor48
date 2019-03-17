@@ -71,6 +71,5 @@ class T48Env(py_environment.PyEnvironment):
         else:
             return ts.transition(self._state, reward=delta_score, discount=1.0)
 
-
-environment = T48Env()
-utils.validate_py_environment(environment, episodes=5)
+# environment = T48Env()
+# utils.validate_py_environment(environment, episodes=5)
