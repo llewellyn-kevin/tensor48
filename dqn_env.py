@@ -61,16 +61,19 @@ class T48Env(py_environment.PyEnvironment):
             raise ValueError('`action` should be between 0 and 3 (inclusive).')
 
         # Get state after the agent action is taken
+        state_buffer = self._state
         self._state = self._game.get_flat_board()
         self._episode_ended = self._game.is_game_over()
         delta_score = self._game.get_score() - iscore
+
+        reward = -1 if np.array_equal(state_buffer, self._state) else delta_score
 
         # Set rewards
         if self._episode_ended:
             # return with a reward of 0
             return ts.termination(self._state, 0.0)
         else:
-            return ts.transition(self._state, reward=delta_score, discount=1.0)
+            return ts.transition(self._state, reward=reward, discount=1.0)
 
 # environment = T48Env()
 # utils.validate_py_environment(environment, episodes=1)
