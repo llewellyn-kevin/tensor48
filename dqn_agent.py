@@ -8,21 +8,24 @@ from tf_agents.agents.dqn import q_network
 from tf_agents.agents.dqn import dqn_agent
 from tf_agents.environments import trajectory
 from tf_agents.replay_buffers import tf_uniform_replay_buffer
+from tf_agents.utils import common
 
 # from tf_agents.drivers import dynamic_step_driver
 # from tf_agents.metrics import metric_utils
 # from tf_agents.metrics import tf_metrics
 # from tf_agents.policies import random_tf_policy
-# from tf_agents.utils import common
 
 tf.compat.v1.enable_resource_variables()
+tf.enable_eager_execution()
 
 # Hyperparameters
 
 fc_layer_params = (100,)
 learning_rate = 1e-3
 replay_buffer_capacity = 100000
+batch_size = 64
 
+num_eval_episodes = 10
 
 # Function Definitions
 def log_step(step):
@@ -40,7 +43,9 @@ def compute_avg_return(environment, policy, num_episodes=10):
 
         while not time_step.is_last():
             action_step = policy.action(time_step)
+            print(action_step)
             time_step = environment.step(action_step.action)
+            print(time_step)
             episode_return += time_step.reward
         total_return += episode_return
 
@@ -49,7 +54,9 @@ def compute_avg_return(environment, policy, num_episodes=10):
 
 def collect_step(environment, policy):
     time_step = environment.current_time_step()
+    print(time_step)
     action_step = policy.action(time_step)
+    print(action_step)
     next_time_step = environment.step(action_step.action)
     traj = trajectory.from_transition(time_step, action_step, next_time_step)
 
@@ -100,3 +107,20 @@ replay_buffer = tf_uniform_replay_buffer.TFUniformReplayBuffer(
     data_spec=tf_agent.collect_data_spec,
     batch_size=tf_env.batch_size,
     max_length=replay_buffer_capacity)
+
+dataset = replay_buffer.as_dataset(
+    num_parallel_calls=3, sample_batch_size=batch_size, num_steps=2).prefetch(3)
+
+iterator = iter(dataset)
+
+# Running the agent
+log_step('Initializing Training')
+
+tf_agent.train = common.function(tf_agent.train)
+
+# Reset the train step
+tf_agent.train_step_counter.assign(0)
+
+# Evaluate the agent's policy once before training.
+avg_return = compute_avg_return(tf_env, tf_agent.policy, num_eval_episodes)
+returns = [avg_return]
