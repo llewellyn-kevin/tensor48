@@ -26,6 +26,7 @@ replay_buffer_capacity = 100000
 batch_size = 64
 
 num_eval_episodes = 10
+num_iterations = 5
 
 # Function Definitions
 def log_step(step):
@@ -54,9 +55,7 @@ def compute_avg_return(environment, policy, num_episodes=10):
 
 def collect_step(environment, policy):
     time_step = environment.current_time_step()
-    print(time_step)
     action_step = policy.action(time_step)
-    print(action_step)
     next_time_step = environment.step(action_step.action)
     traj = trajectory.from_transition(time_step, action_step, next_time_step)
 

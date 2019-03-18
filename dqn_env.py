@@ -63,10 +63,9 @@ class T48Env(py_environment.PyEnvironment):
         # Get state after the agent action is taken
         state_buffer = self._state
         self._state = self._game.get_flat_board()
-        self._episode_ended = self._game.is_game_over()
-        delta_score = self._game.get_score() - iscore
-
-        reward = -1 if np.array_equal(state_buffer, self._state) else delta_score
+        if self._game.is_game_over() or np.array_equal(state_buffer, self._state):
+            self._episode_ended = True
+        reward =  self._game.get_score() - iscore
 
         # Set rewards
         if self._episode_ended:
