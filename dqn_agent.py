@@ -4,9 +4,9 @@ import tensorflow as tf
 
 from tf_agents.environments import tf_py_environment
 from tf_agents.environments import tf_environment
+from tf_agents.agents.dqn import q_network
 
 # from tf_agents.agents.dqn import dqn_agent
-# from tf_agents.agents.dqn import q_network
 # from tf_agents.drivers import dynamic_step_driver
 # from tf_agents.environments import trajectory
 # from tf_agents.metrics import metric_utils
@@ -17,6 +17,7 @@ from tf_agents.environments import tf_environment
 
 # Hyperparameters
 
+fc_layer_params = (100,)
 
 
 
@@ -24,6 +25,14 @@ from tf_agents.environments import tf_environment
 env = T48Env()
 tf_env = tf_py_environment.TFPyEnvironment(env)
 
-print(isinstance(tf_env, tf_environment.TFEnvironment))
+print("Environment Information")
+print("====================================================")
+print("Confirm tf_env:", isinstance(tf_env, tf_environment.TFEnvironment))
 print("TimeStep Specs:", tf_env.time_step_spec())
 print("Action Specs:", tf_env.action_spec())
+
+# Establish Network
+q_net = q_network.QNetwork(
+    tf_env.observation_spec(),
+    tf_env.action_spec(),
+    fc_layer_params=fc_layer_params)
