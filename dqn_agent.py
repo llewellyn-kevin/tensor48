@@ -27,6 +27,7 @@ batch_size = 64
 
 num_eval_episodes = 10
 num_iterations = 5
+collect_steps_per_iteration = 1
 
 # Function Definitions
 def log_step(step):
@@ -63,7 +64,9 @@ def collect_step(environment, policy):
     replay_buffer.add_batch(traj)
 
 # Set up Environment
+train_env = T48Env()
 env = T48Env()
+train_tf_env = tf_py_environment.TFPyEnvironment(train_env)
 tf_env = tf_py_environment.TFPyEnvironment(env)
 
 log_step("Environment Information")
@@ -74,8 +77,8 @@ print("Action Specs:", tf_env.action_spec())
 # Establish Network
 log_step('Establishing Q Network')
 q_net = q_network.QNetwork(
-    tf_env.observation_spec(),
-    tf_env.action_spec(),
+    train_tf_env.observation_spec(),
+    train_tf_env.action_spec(),
     fc_layer_params=fc_layer_params)
 
 # Instantiate optimizer, step_counter, and agent
@@ -87,8 +90,8 @@ train_step_counter = tf.Variable(0)
 
 log_step('Establishing DQN Agent')
 tf_agent = dqn_agent.DqnAgent(
-    tf_env.time_step_spec(),
-    tf_env.action_spec(),
+    train_tf_env.time_step_spec(),
+    train_tf_env.action_spec(),
     q_network=q_net,
     optimizer=optimizer,
     td_errors_loss_fn=dqn_agent.element_wise_squared_loss,
@@ -123,3 +126,24 @@ tf_agent.train_step_counter.assign(0)
 # Evaluate the agent's policy once before training.
 avg_return = compute_avg_return(tf_env, tf_agent.policy, num_eval_episodes)
 returns = [avg_return]
+
+# Start train
+for _ in range(num_iterations):
+
+  # Collect a few steps using collect_policy and save to the replay buffer.
+  for _ in range(collect_steps_per_iteration):
+    collect_step(train_tf_env, tf_agent.collect_policy)
+
+  # Sample a batch of data from the buffer and update the agent's network.
+  experience, unused_info = next(iterator)
+  train_loss = tf_agent.train(experience)
+
+  step = tf_agent.train_step_counter.numpy()
+
+  if step % log_interval == 0:
+    print('step = {0}: loss = {1}'.format(step, train_loss.loss))
+
+  if step % eval_interval == 0:
+    avg_return = compute_avg_return(tf_env, tf_agent.policy, num_eval_episodes)
+    print('step = {0}: Average Return = {1}'.format(step, avg_return))
+    returns.append(avg_return)
