@@ -8,9 +8,20 @@ from tf_agents.environments import time_step as ts
 from tf_agents.environments import utils
 from tf_agents.specs import array_spec
 
+from time import time
+
 class T48Env(py_environment.PyEnvironment):
 
-    def __init__(self):
+    def __init__(self, do_record):
+        self._do_record = do_record
+        if self._do_record:
+            self._step_counter = 0
+            self._record_name = "dqn_eval_logs/{}.log".format(time())
+            self._file = open(self._record_name, "w")
+            self._file.write("Agent Game Log\n\r")
+            self._file.write("======================================================\n\r")
+            self._file.close()
+
         self._game = Interface()
         self._state = self._game.get_flat_board()
         self._episode_ended = False
@@ -18,8 +29,7 @@ class T48Env(py_environment.PyEnvironment):
         self._action_spec = array_spec.BoundedArraySpec(
                 shape=(), dtype=np.int32, minimum=0, maximum=3, name='action')
         self._observation_spec = array_spec.BoundedArraySpec(
-                shape=self._state.shape, dtype=np.uint8, minimum=0, name='observation')
-        
+                shape=self._state.shape, dtype=np.uint8, minimum=0, name='observation') 
         # Define Actions
         self._UP = 0
         self._DOWN = 1
@@ -39,7 +49,26 @@ class T48Env(py_environment.PyEnvironment):
 
         return ts.restart(self._state)
 
+    def _write_log_entry(self, action):
+        full_board = self._game.get_board()
+        score = self._game.get_score()
+        current_step = self._step_counter
+        self._step_counter += 1
+
+        log_string = '''Current Move: {}\r\n
+Current Score: {}\r\n
+{}\r\n
+Next Move: {}\r\n
+======================================================\n\r'''.format(current_step, score, full_board, action)
+
+        f = open(self._record_name, "a")
+        f.write(log_string)
+        f.close()
+    
     def _step(self, action):
+
+        if self._do_record:
+            self._write_log_entry(action)
 
         if self._episode_ended:
             # The last action ended the episode. Ignore the current action and start

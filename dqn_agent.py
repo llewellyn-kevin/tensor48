@@ -66,8 +66,8 @@ def collect_step(environment, policy):
     replay_buffer.add_batch(traj)
 
 # Set up Environment
-train_env = T48Env()
-env = T48Env()
+train_env = T48Env(do_record=False)
+env = T48Env(do_record=True)
 train_tf_env = tf_py_environment.TFPyEnvironment(train_env)
 tf_env = tf_py_environment.TFPyEnvironment(env)
 
