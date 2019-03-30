@@ -26,8 +26,11 @@ replay_buffer_capacity = 100000
 batch_size = 64
 
 num_eval_episodes = 10
-num_iterations = 5
+num_iterations = 500
 collect_steps_per_iteration = 1
+
+log_interval = 10
+eval_interval = 100
 
 # Function Definitions
 def log_step(step):
