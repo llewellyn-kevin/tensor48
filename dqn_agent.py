@@ -9,11 +9,11 @@ from tf_agents.agents.dqn import dqn_agent
 from tf_agents.environments import trajectory
 from tf_agents.replay_buffers import tf_uniform_replay_buffer
 from tf_agents.utils import common
+from tf_agents.policies import random_tf_policy
 
 # from tf_agents.drivers import dynamic_step_driver
 # from tf_agents.metrics import metric_utils
 # from tf_agents.metrics import tf_metrics
-# from tf_agents.policies import random_tf_policy
 
 tf.compat.v1.enable_resource_variables()
 tf.enable_eager_execution()
@@ -28,6 +28,7 @@ batch_size = 64
 num_eval_episodes = 10
 num_iterations = 500
 collect_steps_per_iteration = 1
+initial_collect_steps = 1000
 
 log_interval = 10
 eval_interval = 100
@@ -106,12 +107,18 @@ log_step('Choosing Policies')
 eval_policy = tf_agent.policy
 collect_policy = tf_agent.collect_policy
 
+random_policy = random_tf_policy.RandomTFPolicy(train_tf_env.time_step_spec(),
+                                                train_tf_env.action_spec())
+
 # Setting a replay buffer to store progress of net through steps
 log_step('Starting Replay Buffer')
 replay_buffer = tf_uniform_replay_buffer.TFUniformReplayBuffer(
     data_spec=tf_agent.collect_data_spec,
-    batch_size=tf_env.batch_size,
+    batch_size=train_tf_env.batch_size,
     max_length=replay_buffer_capacity)
+
+for _ in range(initial_collect_steps):
+    collect_step(train_tf_env, random_policy)
 
 dataset = replay_buffer.as_dataset(
     num_parallel_calls=3, sample_batch_size=batch_size, num_steps=2).prefetch(3)
