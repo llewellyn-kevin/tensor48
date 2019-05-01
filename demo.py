@@ -1,5 +1,6 @@
 import curses
 from interface import Interface
+from datetime import datetime
 
 # This defines the main game loop. It constantly checks for inputs
 # and when it recieves them contacts the Interface facade to update
@@ -24,6 +25,8 @@ def main(stdscr):
             return False
         elif char == ord('r'):
             interface.restart()
+        elif char == ord('s'):
+            save_game('test')
         # check for game inputs
         elif char == curses.KEY_LEFT: 
             interface.move_left()
@@ -56,8 +59,20 @@ def write_template(stdscr):
     stdscr.addstr('Press "q" to quit')
     stdscr.move(25, 2)
     stdscr.addstr('Press "r" to restart')
+    stdscr.move(26, 2)
+    stdscr.addstr('Press "s" to save replay')
     stdscr.move(0, 0)
+    write_message(stdscr)
 
+
+global_message = ''
+
+def set_message(message):
+    global_message = message
+
+def write_message(stdscr):
+    stdscr.move(28, 2)
+    stdscr.addstr(global_message)
 
 # Writes a blank board to the screen
 # TODO: Make this code scalable with changing board sizes and actually 
@@ -91,6 +106,15 @@ def write_nums(stdscr, board):
                 stdscr.move(4 * rindex + 8, 7 * cindex + 4)
                 stdscr.addstr('{}'.format(int(2 ** col)))
     stdscr.move(0, 0)
+
+
+def save_game(record):
+    fname = 'replays/demo_recording_{}.js'.format(datetime.now()).replace(' ', '_')
+    f = open(fname, 'w+')
+    f.write(record)
+    f.close()
+    
+    set_message('Wrote replay file to {}'.format(fname))
 
 # Demo driver
 interface = Interface()
