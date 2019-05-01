@@ -68,6 +68,7 @@ def write_template(stdscr):
 global_message = ''
 
 def set_message(message):
+    global global_message
     global_message = message
 
 def write_message(stdscr):
