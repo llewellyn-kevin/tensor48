@@ -1,3 +1,9 @@
+# About this version
+
+This directory contains something of a fork from the repo that became the original game that inspired this project. Some of the code has been modified to allow the AI to use this web based version of the game to show replays.
+
+The LICENSE and CONTIBUTING files in this directory, as well as the remainder of this README, is from the [original project](https://github.com/gabrielecirulli/2048).
+
 # 2048
 A small clone of [1024](https://play.google.com/store/apps/details?id=com.veewo.a1024), based on [Saming's 2048](http://saming.fr/p/2048/) (also a clone).
 
