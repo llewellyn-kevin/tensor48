@@ -2,9 +2,20 @@ function GameManager(size, Actuator) {
   this.size           = size; // Size of the grid
   this.actuator       = new Actuator;
 
-  this.startTiles     = 2;
-  
   this.setup();
+
+  // Start the interval to update the board for each move
+  this.move_num = 0;
+
+  var interval = setInterval(() => {
+    console.log(game_record.moves[this.move_num].new_tile);
+    this.addSetTile(game_record.moves[this.move_num].new_tile);
+    this.move_num++;
+
+    if(this.move_num === game_record.moves.length)
+      clearInterval(interval);
+  }, 1000 / game_record.replay_speed);
+
 }
 
 // Restart the game
@@ -74,17 +85,7 @@ GameManager.prototype.actuate = function () {
     terminated: this.isGameTerminated()
   });
 
-  var move = 0;
-
-  var interval = setInterval(() => {
-    console.log(game_record.moves[move].new_tile);
-    this.addSetTile(game_record.moves[move].new_tile);
-    move++;
-
-    if(move === game_record.moves.length)
-      clearInterval(interval);
-  }, 1000 / game_record.replay_speed);
-
+  
 };
 
 // Represent the current game as an object
