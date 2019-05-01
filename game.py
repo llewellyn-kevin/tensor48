@@ -22,7 +22,8 @@ class Board:
         assert width > 0, "Invalid width" 
         assert height > 0, "Invalid height" 
         self.init_board(width, height)
-        self.rotation_cache = UNKNOWN
+        self.rotation_cache = UNKNOWN 
+        self.last_tile_gen = None
         self.has_changed = False    
         # set game to initial conditions
         self.reset()
@@ -95,6 +96,7 @@ class Board:
             self.gen_random_tile()
             self.has_changed = True
         else:
+            self.last_tile_gen = None
             self.has_changed = False
             self.set_is_game_over()
     
@@ -144,7 +146,14 @@ class Board:
         new_tile = 1 if rand.randint(1, 100) <= int(settings["chance_of_two"]) else 2
         zero_indices = np.where(self.board == 0)
         random_spot = rand.randint(0, zero_indices[0].size - 1)
-        self.board[zero_indices[0][random_spot]][zero_indices[1][random_spot]] = new_tile
+
+        self.last_tile_gen = {
+            'x': zero_indices[0][random_spot], 
+            'y': zero_indices[1][random_spot], 
+            'val': new_tile
+        }
+
+        self.board[self.last_tile_gen['x']][self.last_tile_gen['y']] = new_tile
 
 
     # tests to see if a tile at board[x][y]
