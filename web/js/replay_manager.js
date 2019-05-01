@@ -58,6 +58,11 @@ GameManager.prototype.addRandomTile = function () {
   }
 };
 
+GameManager.prototype.addSetTile = function (tile) {
+  if(tile !== null)
+    this.grid.insertTile(new Tile(tile, tile.val));
+};
+
 // Sends the updated grid to the actuator
 GameManager.prototype.actuate = function () {
   // Clear the state when the game is over (game over only, not win)
@@ -71,12 +76,14 @@ GameManager.prototype.actuate = function () {
 
   var move = 0;
 
-  var interval = setInterval(function() {
-    console.log("input AI move and update board", game_record.moves[move++]);
+  var interval = setInterval(() => {
+    console.log(game_record.moves[move].new_tile);
+    this.addSetTile(game_record.moves[move].new_tile);
+    move++;
 
     if(move === game_record.moves.length)
       clearInterval(interval);
-  }, game_record.replay_speed);
+  }, 1000 / game_record.replay_speed);
 
 };
 
