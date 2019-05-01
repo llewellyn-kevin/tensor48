@@ -1,5 +1,5 @@
 var game_record = {
-  start_tiles: [{x: 0, y: 0, val: 2}, {x: 0, y: 1, val: 2}],
+  start_tiles: [{x: 2, y: 2, val: 4}, {x: 3, y: 3, val: 2}],
   moves: [
     {
       move_num: 1,
