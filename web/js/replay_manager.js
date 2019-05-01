@@ -8,7 +8,7 @@ function GameManager(size, Actuator) {
   this.move_num = 0;
 
   var interval = setInterval(() => {
-    console.log(game_record.moves[this.move_num].new_tile);
+    this.move(game_record.moves[this.move_num].direction);
     this.addSetTile(game_record.moves[this.move_num].new_tile);
     this.move_num++;
 
@@ -170,8 +170,6 @@ GameManager.prototype.move = function (direction) {
   });
 
   if (moved) {
-    this.addRandomTile();
-
     if (!this.movesAvailable()) {
       this.over = true; // Game over!
     }
