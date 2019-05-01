@@ -26,7 +26,7 @@ replay_buffer_capacity = 100000
 batch_size = 64
 
 num_eval_episodes = 10
-num_iterations = 20000
+num_iterations = 200
 collect_steps_per_iteration = 1
 initial_collect_steps = 1000
 
