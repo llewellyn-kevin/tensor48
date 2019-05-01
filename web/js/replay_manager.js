@@ -12,8 +12,7 @@ function GameManager(size, Actuator) {
     this.addSetTile(game_record.moves[this.move_num].new_tile);
     this.move_num++;
 
-    if(this.move_num === game_record.moves.length)
-      clearInterval(interval);
+    if(this.move_num === game_record.moves.length) clearInterval(interval);
   }, 1000 / game_record.replay_speed);
 
 }
@@ -182,10 +181,10 @@ GameManager.prototype.move = function (direction) {
 GameManager.prototype.getVector = function (direction) {
   // Vectors representing tile movement
   var map = {
-    0: { x: 0,  y: -1 }, // Up
-    1: { x: 1,  y: 0 },  // Right
-    2: { x: 0,  y: 1 },  // Down
-    3: { x: -1, y: 0 }   // Left
+    0: { x: -1, y: 0 }, // Left
+    1: { x: 0, y: -1 }, // Up
+    2: { x: 1, y: 0 },  // Right
+    3: { x: 0, y: 1 }   // Down
   };
 
   return map[direction];
