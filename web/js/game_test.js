@@ -1,4 +1,5 @@
 var game_record = {
+  replay_speed: 1000,
   start_tiles: [{x: 2, y: 2, val: 4}, {x: 3, y: 3, val: 2}],
   moves: [
     {

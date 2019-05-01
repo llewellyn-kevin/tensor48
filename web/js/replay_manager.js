@@ -69,6 +69,15 @@ GameManager.prototype.actuate = function () {
     terminated: this.isGameTerminated()
   });
 
+  var move = 0;
+
+  var interval = setInterval(function() {
+    console.log("input AI move and update board", game_record.moves[move++]);
+
+    if(move === game_record.moves.length)
+      clearInterval(interval);
+  }, game_record.replay_speed);
+
 };
 
 // Represent the current game as an object
