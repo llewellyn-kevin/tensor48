@@ -73,7 +73,7 @@ def add_move_to_buffer(current_buffer, move, tile_spawn):
     replay_buffer = current_buffer 
     replay_buffer += '      {{ direction: {},\r\n'.format(move)
     if tile_spawn is None:
-        replay_buffer += '      new_tile: null }}\r\n'
+        replay_buffer += '      new_tile: null },\r\n'
     else:
         replay_buffer += '        new_tile: {{ x: {}, y: {}, val: {} }} }},\r\n'.format(tile_spawn['x'], 
                 tile_spawn['y'], tile_spawn['val'])
