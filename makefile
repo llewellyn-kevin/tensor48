@@ -5,3 +5,6 @@ debug:
 
 clean-logs:
 	-rm -f dqn_eval_logs/*
+
+clean-replays:
+	-rm replays/*

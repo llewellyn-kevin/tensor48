@@ -150,8 +150,8 @@ class Board:
         random_spot = rand.randint(0, zero_indices[0].size - 1)
 
         self.last_tile_gen = {
-            'x': zero_indices[0][random_spot], 
-            'y': zero_indices[1][random_spot], 
+            'y': zero_indices[0][random_spot], 
+            'x': zero_indices[1][random_spot], 
             'val': new_tile
         }
 
