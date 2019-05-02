@@ -42,7 +42,10 @@ class Interface:
         return self.board.score
 
     def get_last_tile(self):
-        return self.last_tile_gen
+        return self.board.last_tile_gen 
+
+    def get_starting_tiles(self):
+        return self.board.starting_tiles
 
     def is_game_over(self):
         return self.board.is_game_over

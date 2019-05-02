@@ -23,7 +23,8 @@ class Board:
         assert height > 0, "Invalid height" 
         self.init_board(width, height)
         self.rotation_cache = UNKNOWN 
-        self.last_tile_gen = None
+        self.last_tile_gen = None 
+        self.starting_tiles = []
         self.has_changed = False    
         # set game to initial conditions
         self.reset()
@@ -55,6 +56,7 @@ class Board:
         self.board.fill(0)
         for i in range(int(settings["starting_tile_count"])):
             self.gen_random_tile()
+            self.starting_tiles.append(self.last_tile_gen)
         # self.board = self._demo_board()
         # self.board = self._demo_board2()
         # self.board = self._demo_not_over_board()
