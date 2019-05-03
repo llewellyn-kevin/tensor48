@@ -1,7 +1,10 @@
 
 # temporary debug function for faster testing
 debug:
-	python demo.py
+	python3 demo.py
+
+replay:
+	python3 replay_manager.py
 
 clean-logs:
 	-rm -f dqn_eval_logs/*
