@@ -57,7 +57,7 @@ def main(stdscr):
 
 
 # Get clear replay buffer 
-def new_replay_buffer(starting_tiles, speed = 2):
+def new_replay_buffer(starting_tiles, speed = 8):
     replay_buffer = 'game_record = {\r\n'
     replay_buffer += '  replay_speed: {},\r\n'.format(speed)
     replay_buffer += '  start_tiles: ['
